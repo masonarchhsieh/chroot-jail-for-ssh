@@ -1,0 +1,36 @@
+---
+
+- hosts: localhost
+  gather_facts: false
+  vars:
+    jail_path: /home/chroot/            # Assign the jail's path
+
+  tasks:
+    # Configure the sshd_config file 
+    - name: Include tasks to configure the sshd_config file
+      include_tasks: configure_sshd.yml
+      tags: ssh-setup
+      notify:
+      - restart ssh
+
+    # Load variables, Create and Add ssh user
+    - name: Include inventory variables
+      include_vars:
+        file: vars.yml
+        name: users
+
+    - name: Create and update users
+      include_tasks: tasks.yml
+      loop: "{{ users.all.vars.users }}"
+      loop_control:
+        loop_var: user
+      notify:
+      - restart ssh
+
+  # restart sshd
+  handlers:
+  - name: restart ssh
+    service:
+      name: ssh
+      state: restarted
+

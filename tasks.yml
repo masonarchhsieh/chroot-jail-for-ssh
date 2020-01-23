@@ -1,0 +1,60 @@
+---
+
+# Create users
+# Reference: https://docs.ansible.com/ansible/latest/modules/user_module.html
+- name: Add user to the system
+  user:
+    name: "{{ user.name }}"
+    #shell: /bin/bash                           # Set the default shell to bash
+    #groups: "{{ user.groups }}"                # Add user to a list of groups:
+    #append: "{{ user.append }}"                # Add user to the group specified(yes/no)
+    home: "{{ jail_path }}/home/{{ user.name }}" # Set up the user's directory
+    generate_ssh_key: no                        # Whether to generate SSH key for the user (yes: for testing)
+    password: "{{ user.password }}"
+
+# To set up the $HOME for each user in the chroot/
+- name: Set up the home directory for the user
+  file:
+    path: "{{ jail_path }}/home/{{ user.name }}" 
+    owner: "{{ user.name }}"
+    group: "{{ user.name }}"
+    mode: "0750"
+
+# To create the symbolic link of the HOME folder
+- name: Create symbolic links 
+  file:
+    src: "{{ jail_path }}/home/{{ user.name }}"
+    dest: "/home/{{ user.name }}"
+    owner: "{{ user.name }}" 
+    group: "{{ user.name }}"
+    state: link
+
+# Set the user's home dir to this
+- name: Set the user's home directory to this
+  shell: usermod -d "/home/{{ user.name }}" "{{ user.name }}"
+  args:
+    executable: /bin/bash
+
+# Adds the user's SSH authorized key
+# Reference: https://docs.ansible.com/ansible/latest/modules/authorized_key_module.html
+- name: Add the user's SSH authorized key
+  authorized_key:
+    user: "{{ user.name }}"                 # The username on remote host
+    key: "{{ user.ssh_keys }}"              # The ssh public key 
+    manage_dir: no                          # We don't want the user can manage the directory
+    path: "/etc/ssh/authorized_keys/{{ user.name }}"
+    state: present
+
+
+# Add the user to the chroot list in /etc/ssh/sshd_config
+- name: Insert/Update "Match User" configuration block in /etc/ssh/sshd_config
+  blockinfile:
+    path: /etc/ssh/sshd_config
+    block: |
+      Match User {{ user.name }}
+      ChrootDirectory {{ jail_path }}
+      #PasswordAuthentication no
+    backup: no
+  notify:
+  - restart ssh
+

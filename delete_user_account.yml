@@ -1,0 +1,31 @@
+---
+- hosts: localhost
+  remote_user: root
+  vars:
+    user: 
+
+  # Delete a chroot user from given the user's name
+  # useage: 
+  #   # ansibile-playbook delete_user_account.yml --extra-vars user=username
+  tasks:
+    - name: Delete the user
+      user:
+        name: "{{ user }}"
+        home: "/home/chroot/home/{{ user }}"
+        state: absent
+        remove: yes
+
+    - name: Delete the symbolic link
+      file:
+        path: "/home/{{ user }}"
+        state: absent 
+
+    - name: Delete the Home dir
+      file:
+        path: "/home/chroot/home/{{ user }}"
+        state: absent
+    
+    - name: Delete the authorized SSH key in /etc/ssh/authorized_keys dir
+      file:
+        path: "/etc/ssh/authorized_keys/{{ user }}"
+        state: absent

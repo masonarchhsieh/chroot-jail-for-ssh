@@ -1,0 +1,33 @@
+---
+    # Create the authorized_keys folder to store users' public keys in /etc/ssh/
+    - name: Create authorized_keys folder in /etc/ssh/
+      file:
+        path: /etc/ssh/
+        state: directory
+        mode: "0755" 
+ 
+    # Configure the sshd_config file 
+    - name: Assign the path to the AuthorizedKeysFile 
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^AuthorizedKeysFile'
+        line: AuthorizedKeysFile /etc/ssh/authorized_keys/%u
+
+    - name: Assign the PasswodAuthentication value
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^PasswordAuthentication'
+        line: PasswordAuthentication no
+    
+    - name: Assign the ChallengeResponseAuthentication value
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^ChallengeResponseAuthentication'
+        line: ChallengeResponseAuthentication no
+
+    - name: Assign the UsePAM value
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^UsePAM'
+        line: UsePAM yes
+
