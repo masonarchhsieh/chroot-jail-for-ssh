@@ -1,0 +1,9 @@
+This folder contains a Dockerfile and bash scripts(add_chroot_user and create_chrooted_jail) for creating a chroot jail.
+The Dockerfile would build a docker image based on debian and copy the bash scripts to the /home/ directory.
+
+To build the image:
+    $ docker build -t debian-ssh-users .
+
+It would automatically run the create_chrooted_jail.sh. You should be able to see the chroot/ under your /home/ directory.
+You can then call the following command to add a new ssh user.
+    $ bash add_chroot_user.sh
