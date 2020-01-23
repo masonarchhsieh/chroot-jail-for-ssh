@@ -4,5 +4,5 @@ all:
   vars:
     users:
       - name: user1
-        ssh_keys: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDNOB7f43EYQeVn0h1/dZ5YPFGq2+GnxTc0RKtgc9y5GVN1JRXR7VfE3VZ0aqk/So6AjoTfVJ9Wg34eyGB3AT1EpGQ/rSG+/iGHfasssUP/OQngCPrDsMLOtp/EAObRDaGw4Pr/LahsSPn7ZVEUg2JWJ5oT03NSLQtVQLsHCcYD7l6oqPl4Yo1fTToldWDKsHYzGVgxYhfD0QhHZSaEiGls1pH7dolHkbz2ko2XuYWHtv7kWj3nzZap7jup2YqIggJ+p8kURQAX/UFumN57IaVIlQYwVkYYC7fNTXClu+dSECbaFwJRwMiU+NimnAPzFsg5Lh1HTFA8RIIW5e1tpbCP
+        ssh_keys: 
         password: $6$ksptnDLEfAWqA2Ik$SExGCotLmhw7iZKL.BIFsb1yroYuxDcAmmS2AZtr89xQ9yy5I9NvQ793TNLOQmwEYgulUAyMtm8pt4l1hugx7/
